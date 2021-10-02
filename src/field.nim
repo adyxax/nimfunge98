@@ -8,7 +8,7 @@ type
     lx, ly: int
     lines: seq[Line]
 
-proc blank*(f: var Field, x, y: int) =
+func blank*(f: var Field, x, y: int) =
   if y < f.y or y >= f.y+f.ly: # outside the field
     return
   var l = addr f.lines[y-f.y]
@@ -59,17 +59,80 @@ proc blank*(f: var Field, x, y: int) =
       x2 = f.lines[i].x + f.lines[i].l
   f.lx = x2-f.x
 
-proc get*(f: Field, x, y: int): int =
+func get*(f: Field, x, y: int): int =
   if y >= f.y and y < f.y+f.ly:
     let l = f.lines[y-f.y]
     if x >= l.x and x < l.x+l.l:
       return l.columns[x-l.x]
   return int(' ')
 
-proc isIn*(f: Field, x, y: int): bool =
+func isIn*(f: Field, x, y: int): bool =
   return x >= f.x and y >= f.y and x < f.x+f.lx and y < f.y+f.ly
 
-proc set*(f: var Field, x, y, v: int) =
+proc load*(f: var Field, filename: string): bool =
+  var file: File
+  if not open(file, filename):
+    return false
+  defer: file.close()
+  f.lines.add(Line())
+  var l = addr f.lines[0]
+  var trailingSpaces = 0
+  var data: array[255,char]
+  while true:
+    let n = file.readChars(data, 0, 255)
+    if n <= 0:
+      if f.ly == 0:
+        if l.l == 0: # we got en empty file!
+          return false
+        f.x = l.x
+      if l.l > 0:
+        inc f.ly
+        if f.lx < l.l+l.x-f.x:
+          f.lx = l.l+l.x-f.x
+      break
+    var i = 0
+    while i < n:
+      if data[i] == char(12):
+        inc i
+        continue
+      if data[i] == '\n' or data[i] == '\r':
+        if f.ly == 0:
+          if l.l == 0:
+            return false
+          f.x = l.x
+        inc f.ly
+        if f.x > l.x:
+          f.x = l.x
+        if f.lx < l.l+l.x-f.x:
+          f.lx = l.l+l.x-f.x
+        f.lines.add(Line())
+        l = addr f.lines[^1]
+        trailingSpaces = 0
+        if i+1 < n and data[i] == '\r' and data[i+1] == '\n':
+          inc i
+      else:
+        if data[i] == ' ':
+          if l.l == 0: # trim leading spaces
+            inc l.x
+          else:
+            inc trailingSpaces
+        else:
+          if trailingSpaces > 0:
+            let newL = l.l + trailingSpaces + 1
+            l.columns.setlen(newL)
+            for j in l.l..<newL-1:
+              l.columns[j] = int(' ')
+            l.columns[newL-1] = int(data[i])
+            l.l = newL
+            trailingSpaces = 0
+          else:
+            l.columns.add(int(data[i]))
+            inc l.l
+      inc i
+  f.lines = f.lines[0..<f.ly]
+  return true
+
+func set*(f: var Field, x, y, v: int) =
   if v == int(' '):
     f.blank(x, y)
   elif y >= f.y:

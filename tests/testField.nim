@@ -2,8 +2,12 @@ import unittest
 
 include field
 
-proc `==`(a, b: Line): bool = a.x == b.x and a.l == b.l and a.columns == b.columns
-proc `==`(a, b: Field): bool = a.x == b.x and a.lx == b.lx and a.y == b.y and a.ly == b.ly and a.lines == b.lines
+func `==`(a, b: Line): bool = a.x == b.x and a.l == b.l and a.columns == b.columns
+func `==`(a, b: Field): bool = a.x == b.x and a.lx == b.lx and a.y == b.y and a.ly == b.ly and a.lines == b.lines
+func cols(a: openarray[char]): seq[int] =
+  result.setlen(a.len)
+  for i in 0..<a.len:
+    result[i] = a[i].int()
 
 const minimal = Field(x: 0, y: 0, lx: 1, ly: 1, lines: @[Line(x: 0, l: 1, columns: @[int('@')])])
 
@@ -99,8 +103,48 @@ suite "Field":
   test "Field.isIn":
     check minimal.isIn(0, 0) == true
     check minimal.isIn(1, 0) == false
+  test "Field.load":
+    var nonexistant: Field
+    check nonexistant.load("nonexistant") == false
+    var invalid: Field
+    check invalid.load("examples/invalid.b98") == false
+    var empty: Field
+    check empty.load("examples/empty.b98") == false
+    var min: Field
+    check min.load("examples/minimal.b98") == true
+    check min == minimal
+    var hello1A: Field; var hello1B = Field(lx: 24, ly: 1, lines: @[Line(l:24, columns: @['6', '4', '+', '"', '!', 'd', 'l', 'r', 'o', 'W', ' ', ',', 'o', 'l', 'l', 'e', 'H', '"', '>', ':', '#', ',', '_', '@'].cols)])
+    check hello1A.load("examples/hello.b98") == true
+    check hello1A == hello1B
+    var rn: Field
+    check rn.load("examples/rn.b98") == true
+    check rn == hello1B
+    var hello2A: Field; var hello2B = Field(x: 1, lx: 33, ly: 2,lines: @[
+      Line(x:33, l:1, columns: @['v'].cols),
+      Line(x:1, l:33, columns: @['@', ' ', '>', ' ', '#', ';', '>', ':', '#', ',', '_', 'e', '-', 'j', ';', ' ', '"', 'H', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '!', '"', 'd', 'a', '<'].cols)
+    ])
+    check hello2A.load("examples/hello2.b98") == true
+    check hello2A == hello2B
+    var factorial2A: Field; var factorial2B = Field(x: 0, lx: 15, ly: 2,lines: @[
+      Line(x:0, l:15, columns: @['&', '>', ':', '1', '-', ':', 'v', ' ', 'v', ' ', '*', '_', '$', '.', '@'].cols),
+      Line(x:1, l:11, columns: @['^', ' ', ' ', ' ', ' ', '_', '$', '>', '\\', ':', '^'].cols)
+    ])
+    check factorial2A.load("examples/factorial.b98") == true
+    check factorial2A == factorial2B
+    var dna2A: Field; var dna2B = Field(x: 0, lx: 7, ly: 8,lines: @[
+      Line(x:0, l:7, columns: @['7', '^', 'D', 'N', '>', 'v', 'A'].cols),
+      Line(x:0, l:7, columns: @['v', '_', '#', 'v', '?', ' ', 'v'].cols),
+      Line(x:0, l:7, columns: @['7', '^', '<', '"', '"', '"', '"'].cols),
+      Line(x:0, l:7, columns: @['3', ' ', ' ', 'A', 'C', 'G', 'T'].cols),
+      Line(x:0, l:7, columns: @['9', '0', '!', '"', '"', '"', '"'].cols),
+      Line(x:0, l:7, columns: @['4', '*', ':', '>', '>', '>', 'v'].cols),
+      Line(x:0, l:7, columns: @['+', '8', '^', '-', '1', ',', '<'].cols),
+      Line(x:0, l:7, columns: @['>', ' ', ',', '+', ',', '@', ')'].cols),
+    ])
+    check dna2A.load("examples/dna.b98") == true
+    check dna2A == dna2B
   test "Field.set":
-    var f = Field(x: 0, y: 0, lx: 1, ly: 1, lines: @[Line(x: 0, l: 1, columns: @[int('>')])])
+    var f = Field(x: 0, y: 0, lx: 1, ly: 1, lines: @[Line(x: 0, l: 1, columns: @['>'].cols)])
     f.set(0,0,int('@'))
     check f == minimal
     f.set(1,0,int(' '))
