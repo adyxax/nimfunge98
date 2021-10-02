@@ -1,6 +1,6 @@
 import unittest
 
-include field
+include ../src/field
 
 func `==`(a, b: Line): bool = a.x == b.x and a.l == b.l and a.columns == b.columns
 func `==`(a, b: Field): bool = a.x == b.x and a.lx == b.lx and a.y == b.y and a.ly == b.ly and a.lines == b.lines
@@ -12,7 +12,7 @@ func cols(a: openarray[char]): seq[int] =
 const minimal = Field(x: 0, y: 0, lx: 1, ly: 1, lines: @[Line(x: 0, l: 1, columns: @[int('@')])])
 
 suite "Field":
-  test "Field.blank":
+  test "blank":
     var f = Field(x: -7, y: -5, lx: 17, ly: 10, lines: @[
       Line(x: -5, l: 1, columns: @[int('x')]),
       Line(x: 0, l: 0, columns: @[]),
@@ -97,13 +97,13 @@ suite "Field":
     const moinsr = Field(x: 0, y: 0, lx: 1, ly: 1, lines: @[Line(x: 0, l: 1, columns: @[int('@')])])
     f.blank(4,0)
     check f == moinsr
-  test "Field.get":
+  test "get":
     check minimal.get(0,0) == int('@')
     check minimal.get(1,0) == int(' ')
-  test "Field.isIn":
+  test "isIn":
     check minimal.isIn(0, 0) == true
     check minimal.isIn(1, 0) == false
-  test "Field.load":
+  test "load":
     var nonexistant: Field
     check nonexistant.load("nonexistant") == false
     var invalid: Field
@@ -143,7 +143,7 @@ suite "Field":
     ])
     check dna2A.load("examples/dna.b98") == true
     check dna2A == dna2B
-  test "Field.set":
+  test "set":
     var f = Field(x: 0, y: 0, lx: 1, ly: 1, lines: @[Line(x: 0, l: 1, columns: @['>'].cols)])
     f.set(0,0,int('@'))
     check f == minimal
