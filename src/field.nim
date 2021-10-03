@@ -8,7 +8,7 @@ type
     lx, ly: int
     lines: seq[Line]
 
-func blank*(f: var Field, x, y: int) =
+func Blank*(f: var Field, x, y: int) =
   if y < f.y or y >= f.y+f.ly: # outside the field
     return
   var l = addr f.lines[y-f.y]
@@ -59,17 +59,17 @@ func blank*(f: var Field, x, y: int) =
       x2 = f.lines[i].x + f.lines[i].l
   f.lx = x2-f.x
 
-func get*(f: Field, x, y: int): int =
+func Get*(f: Field, x, y: int): int =
   if y >= f.y and y < f.y+f.ly:
     let l = f.lines[y-f.y]
     if x >= l.x and x < l.x+l.l:
       return l.columns[x-l.x]
   return int(' ')
 
-func isIn*(f: Field, x, y: int): bool =
+func IsIn*(f: Field, x, y: int): bool =
   return x >= f.x and y >= f.y and x < f.x+f.lx and y < f.y+f.ly
 
-proc load*(f: var Field, filename: string): bool =
+proc Load*(f: var Field, filename: string): bool =
   var file: File
   if not open(file, filename):
     return false
@@ -132,9 +132,9 @@ proc load*(f: var Field, filename: string): bool =
   f.lines = f.lines[0..<f.ly]
   return true
 
-func set*(f: var Field, x, y, v: int) =
+func Set*(f: var Field, x, y, v: int) =
   if v == int(' '):
-    f.blank(x, y)
+    f.Blank(x, y)
   elif y >= f.y:
     if y < f.y+f.ly:  # the line exists
       var l = addr f.lines[y-f.y]
