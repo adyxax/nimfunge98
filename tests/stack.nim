@@ -29,6 +29,9 @@ suite "Stack":
     check s.data[0] == 5
     check s.data[1] == -2
     check s.data[2] == 0
+    for i in 0..30:
+      s[].Push(i)
+    check s.size == 64
   test "PopVector":
     var empty = NewStack()
     check empty[].PopVector() == (0, 0)
@@ -54,6 +57,9 @@ suite "Stack":
     check s.data[0] == 5
     check s.data[1] == -3
     check s.data[2] == 0
+    for i in 0..15:
+      s[].PushVector((i, i+1))
+    check s.size == 64
   test "Clear":
     var empty: Stack
     empty.Clear()
