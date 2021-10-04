@@ -13,7 +13,7 @@ requires "nim >= 1.4.8"
 
 # Tasks
 
-task test, "Runs the test suite":
+task tests, "Runs the test suite":
   exec "testament pattern \"tests/*.nim\""
 
 task coverage, "Run all tests and calculate coverage":

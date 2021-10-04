@@ -15,6 +15,7 @@ Current limitations are :
 - [Quick install](#quick-install)
 - [Usage](#usage)
 - [Building](#building)
+- [Running tests](#running-tests)
 
 ## Dependencies
 
@@ -48,17 +49,25 @@ For a release build, use :
 nimble build -d:release
 ```
 
+## Running tests
+
 To run unit tests, use :
 ```
 nimble tests
 ```
 
-To run integration tests, use :
-```
-nimble integration
-```
-
 To calculate the code coverage of tests, use :
 ```
 nimble coverage
+```
+
+To run tests only on (for example) the stack module, use :
+```
+nim r tests/stack.nim
+```
+
+To debug these particular tests, use :
+```
+nim c --debugger:on --parallelBuild:1 --debuginfo --linedir:on tests/stack.nim
+gdb tests/stack
 ```
