@@ -133,5 +133,5 @@ suite "Stack":
   test "Next":
     var empty = NewStack()
     check empty[].Next() == nil
-    var some = NewStack(next=empty)
+    var some = NewStack(next = empty)
     check some[].Next() == empty

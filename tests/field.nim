@@ -92,14 +92,14 @@ suite "Field":
     f.Blank(5, 2)
     check f == moinsd
     const moinsl = Field(x: 0, y: 0, lx: 5, ly: 1, lines: @[Line(x: 0, l: 5, columns: @[int('@'), 32, 32, 32, int('r')])])
-    f.Blank(-2,0)
+    f.Blank(-2, 0)
     check f == moinsl
     const moinsr = Field(x: 0, y: 0, lx: 1, ly: 1, lines: @[Line(x: 0, l: 1, columns: @[int('@')])])
-    f.Blank(4,0)
+    f.Blank(4, 0)
     check f == moinsr
   test "Get":
-    check minimal.Get(0,0) == int('@')
-    check minimal.Get(1,0) == int(' ')
+    check minimal.Get(0, 0) == int('@')
+    check minimal.Get(1, 0) == int(' ')
   test "IsIn":
     check minimal.IsIn(0, 0) == true
     check minimal.IsIn(1, 0) == false
@@ -113,41 +113,43 @@ suite "Field":
     var min: Field
     check min.Load("examples/minimal.b98") == true
     check min == minimal
-    var hello1A: Field; var hello1B = Field(lx: 24, ly: 1, lines: @[Line(l:24, columns: @['6', '4', '+', '"', '!', 'd', 'l', 'r', 'o', 'W', ' ', ',', 'o', 'l', 'l', 'e', 'H', '"', '>', ':', '#', ',', '_', '@'].cols)])
+    var hello1A: Field; var hello1B = Field(lx: 24, ly: 1, lines: @[Line(l: 24, columns: @['6', '4', '+', '"', '!', 'd', 'l', 'r', 'o', 'W', ' ', ',', 'o', 'l', 'l', 'e', 'H', '"',
+        '>', ':', '#', ',', '_', '@'].cols)])
     check hello1A.Load("examples/hello.b98") == true
     check hello1A == hello1B
     var rn: Field
     check rn.Load("examples/rn.b98") == true
     check rn == hello1B
-    var hello2A: Field; var hello2B = Field(x: 1, lx: 33, ly: 2,lines: @[
-      Line(x:33, l:1, columns: @['v'].cols),
-      Line(x:1, l:33, columns: @['@', ' ', '>', ' ', '#', ';', '>', ':', '#', ',', '_', 'e', '-', 'j', ';', ' ', '"', 'H', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '!', '"', 'd', 'a', '<'].cols)
+    var hello2A: Field; var hello2B = Field(x: 1, lx: 33, ly: 2, lines: @[
+      Line(x: 33, l: 1, columns: @['v'].cols),
+      Line(x: 1, l: 33, columns: @['@', ' ', '>', ' ', '#', ';', '>', ':', '#', ',', '_', 'e', '-', 'j', ';', ' ', '"', 'H', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '!',
+          '"', 'd', 'a', '<'].cols)
     ])
     check hello2A.Load("examples/hello2.b98") == true
     check hello2A == hello2B
-    var factorial2A: Field; var factorial2B = Field(x: 0, lx: 15, ly: 2,lines: @[
-      Line(x:0, l:15, columns: @['&', '>', ':', '1', '-', ':', 'v', ' ', 'v', ' ', '*', '_', '$', '.', '@'].cols),
-      Line(x:1, l:11, columns: @['^', ' ', ' ', ' ', ' ', '_', '$', '>', '\\', ':', '^'].cols)
+    var factorial2A: Field; var factorial2B = Field(x: 0, lx: 15, ly: 2, lines: @[
+      Line(x: 0, l: 15, columns: @['&', '>', ':', '1', '-', ':', 'v', ' ', 'v', ' ', '*', '_', '$', '.', '@'].cols),
+      Line(x: 1, l: 11, columns: @['^', ' ', ' ', ' ', ' ', '_', '$', '>', '\\', ':', '^'].cols)
     ])
     check factorial2A.Load("examples/factorial.b98") == true
     check factorial2A == factorial2B
-    var dna2A: Field; var dna2B = Field(x: 0, lx: 7, ly: 8,lines: @[
-      Line(x:0, l:7, columns: @['7', '^', 'D', 'N', '>', 'v', 'A'].cols),
-      Line(x:0, l:7, columns: @['v', '_', '#', 'v', '?', ' ', 'v'].cols),
-      Line(x:0, l:7, columns: @['7', '^', '<', '"', '"', '"', '"'].cols),
-      Line(x:0, l:7, columns: @['3', ' ', ' ', 'A', 'C', 'G', 'T'].cols),
-      Line(x:0, l:7, columns: @['9', '0', '!', '"', '"', '"', '"'].cols),
-      Line(x:0, l:7, columns: @['4', '*', ':', '>', '>', '>', 'v'].cols),
-      Line(x:0, l:7, columns: @['+', '8', '^', '-', '1', ',', '<'].cols),
-      Line(x:0, l:7, columns: @['>', ' ', ',', '+', ',', '@', ')'].cols),
+    var dna2A: Field; var dna2B = Field(x: 0, lx: 7, ly: 8, lines: @[
+      Line(x: 0, l: 7, columns: @['7', '^', 'D', 'N', '>', 'v', 'A'].cols),
+      Line(x: 0, l: 7, columns: @['v', '_', '#', 'v', '?', ' ', 'v'].cols),
+      Line(x: 0, l: 7, columns: @['7', '^', '<', '"', '"', '"', '"'].cols),
+      Line(x: 0, l: 7, columns: @['3', ' ', ' ', 'A', 'C', 'G', 'T'].cols),
+      Line(x: 0, l: 7, columns: @['9', '0', '!', '"', '"', '"', '"'].cols),
+      Line(x: 0, l: 7, columns: @['4', '*', ':', '>', '>', '>', 'v'].cols),
+      Line(x: 0, l: 7, columns: @['+', '8', '^', '-', '1', ',', '<'].cols),
+      Line(x: 0, l: 7, columns: @['>', ' ', ',', '+', ',', '@', ')'].cols),
     ])
     check dna2A.Load("examples/dna.b98") == true
     check dna2A == dna2B
   test "Set":
     var f = Field(x: 0, y: 0, lx: 1, ly: 1, lines: @[Line(x: 0, l: 1, columns: @['>'].cols)])
-    f.Set(0,0,int('@'))
+    f.Set(0, 0, int('@'))
     check f == minimal
-    f.Set(1,0,int(' '))
+    f.Set(1, 0, int(' '))
     check f == minimal
     const xappend = Field(x: 0, y: 0, lx: 5, ly: 1, lines: @[Line(x: 0, l: 5, columns: @[int('@'), 32, 32, 32, int('r')])])
     f.Set(4, 0, int('r'))

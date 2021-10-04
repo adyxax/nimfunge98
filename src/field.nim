@@ -12,13 +12,13 @@ func Blank*(f: var Field, x, y: int) =
   if y < f.y or y >= f.y+f.ly: # outside the field
     return
   var l = addr f.lines[y-f.y]
-  if x < l.x or x >= l.x+l.l:  # outside the field
+  if x < l.x or x >= l.x+l.l: # outside the field
     return
-  if x > l.x and x < l.x+l.l-1:  # just set the value
+  if x > l.x and x < l.x+l.l-1: # just set the value
     l.columns[x-l.x] = int(' ')
     return
   if l.l == 1: # this was the last character on the line
-    if y == f.y:  # we need to trim the leading lines
+    if y == f.y: # we need to trim the leading lines
       var i = 1
       while f.lines[i].l == 0:
         inc i
@@ -34,14 +34,14 @@ func Blank*(f: var Field, x, y: int) =
     else: # it was a line in the middle
       l.l = 0
       l.columns = @[]
-  elif x == l.x:  # we need to remove leading spaces
+  elif x == l.x: # we need to remove leading spaces
     var i = 1
     while l.columns[i] == int(' '):
       inc i
     l.x += i
     l.columns = l.columns[i..<l.l]
     l.l -= i
-  elif x == l.l+l.x-1:  # we need to remove trailing spaces
+  elif x == l.l+l.x-1: # we need to remove trailing spaces
     var i = l.l-2
     while l.columns[i] == int(' '):
       dec i
@@ -77,7 +77,7 @@ proc Load*(f: var Field, filename: string): bool =
   f.lines.add(Line())
   var l = addr f.lines[0]
   var trailingSpaces = 0
-  var data: array[255,char]
+  var data: array[255, char]
   while true:
     let n = file.readChars(data, 0, 255)
     if n <= 0:
@@ -136,9 +136,9 @@ func Set*(f: var Field, x, y, v: int) =
   if v == int(' '):
     f.Blank(x, y)
   elif y >= f.y:
-    if y < f.y+f.ly:  # the line exists
+    if y < f.y+f.ly: # the line exists
       var l = addr f.lines[y-f.y]
-      if l.l == 0:  # An empty line is a special case
+      if l.l == 0: # An empty line is a special case
         l.x = x
         l.l = 1
         l.columns = @[v]
