@@ -130,6 +130,13 @@ suite "Stack":
     check full.data[0] == 1
     check empty.data[0] == 2
     check empty.data[1] == 3
+  test "Discard":
+    var empty = NewStack()
+    empty[].Discard(1)
+    check empty.height == 0
+    empty[].Push(2)
+    empty[].Discard(3)
+    check empty.height == 0
   test "Next":
     var empty = NewStack()
     check empty[].Next() == nil

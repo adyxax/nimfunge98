@@ -58,12 +58,24 @@ func Swap*(s: var Stack) =
   s.Push(b)
 
 func Transfert*(toss: var Stack, soss: var Stack, n: int) =
+  ## Implements a value transfert between two stacks, intended for use with the '{'
+  ## (aka begin) and '}' (aka end) stackstack commands
   toss.height += n
+  if toss.height > toss.size:
+    toss.size += 32
+    toss.data.setlen(toss.size)
   for i in 1..min(soss.height, n):
     toss.data[toss.height-i] = soss.data[soss.height-i]
+  for i in min(soss.height, n)+1..n:
+    toss.data[toss.height-i] = 0
   soss.height -= n
   if soss.height < 0:
     soss.height = 0
+
+func Discard*(s: var Stack, n: int) =
+  s.height -= n
+  if s.height < 0:
+    s.height = 0
 
 func Next*(s: Stack): ref Stack =
   return s.next
