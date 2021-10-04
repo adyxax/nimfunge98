@@ -73,6 +73,7 @@ func Transfert*(toss: var Stack, soss: var Stack, n: int) =
     soss.height = 0
 
 func Discard*(s: var Stack, n: int) =
+  ## Implements a discard mechanism intended for use with the '}'(aka end) stackstack command
   s.height -= n
   if s.height < 0:
     s.height = 0

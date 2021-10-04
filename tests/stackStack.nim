@@ -22,6 +22,14 @@ suite "StackStack":
     empty[].Push(3)
     empty[].Clear()
     check empty[].Pop() == 0
+  test "Duplicate":
+    var empty = NewStackStack()
+    empty[].Clear()
+    check empty[].Pop() == 0
+  test "Swap":
+    var empty = NewStackStack()
+    empty[].Swap()
+    check empty[].Pop() == 0
   test "Begin":
     var empty = NewStackStack()
     empty[].Begin((1, 2))

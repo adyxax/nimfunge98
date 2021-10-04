@@ -110,6 +110,8 @@ suite "Stack":
     check empty.data[1] == 0
     check empty.data[2] == 0
     check empty.data[3] == 0
+    empty[].Transfert(empty2[], 32)
+    check empty.size == 64
     empty = NewStack()
     var some = NewStack()
     some[].Push(2)

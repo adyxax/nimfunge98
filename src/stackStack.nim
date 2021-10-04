@@ -25,6 +25,12 @@ func PushVector*(ss: var StackStack, v: tuple[x, y: int]) =
 func Clear*(ss: var StackStack) =
   ss.head[].Clear()
 
+func Duplicate*(ss: var StackStack) =
+  ss.head[].Duplicate()
+
+func Swap*(ss: var StackStack) =
+  ss.head[].Swap()
+
 func Begin*(ss: var StackStack, v: tuple[x, y: int]) =
   inc ss.height
   let soss = ss.head
