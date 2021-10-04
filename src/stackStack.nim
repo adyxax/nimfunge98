@@ -6,7 +6,7 @@ type
     head: ref Stack
 
 func NewStackStack*(): ref StackStack =
-  result = new(StackStack)
+  new(result)
   result.head = NewStack()
   result.height = 1
 

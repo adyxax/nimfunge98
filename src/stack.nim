@@ -5,7 +5,7 @@ type
     next: ref Stack
 
 func NewStack*(size: int = 32, next: ref Stack = nil): ref Stack =
-  result = new(Stack)
+  new(result)
   result.size = size
   result.data.setlen(size)
   result.next = next

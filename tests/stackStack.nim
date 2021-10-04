@@ -60,7 +60,7 @@ suite "StackStack":
     check empty[].Pop() == 0
   test "End":
     var empty = NewStackStack()
-    var v: tuple[x,y: int] = (0, 0)
+    var v: tuple[x, y: int] = (0, 0)
     empty[].Push(1)
     check empty[].End(v) == true
     check empty.height == 1
