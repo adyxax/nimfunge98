@@ -104,36 +104,23 @@ suite "Field":
     check minimal.IsIn(0, 0) == true
     check minimal.IsIn(1, 0) == false
   test "Load":
-    var nonexistant: Field
-    check nonexistant.Load("nonexistant") == false
-    var invalid: Field
-    check invalid.Load("examples/invalid.b98") == false
-    var empty: Field
-    check empty.Load("examples/empty.b98") == false
-    var min: Field
-    check min.Load("examples/minimal.b98") == true
-    check min == minimal
-    var hello1A: Field; var hello1B = Field(lx: 24, ly: 1, lines: @[Line(l: 24, columns: @['6', '4', '+', '"', '!', 'd', 'l', 'r', 'o', 'W', ' ', ',', 'o', 'l', 'l', 'e', 'H', '"',
-        '>', ':', '#', ',', '_', '@'].cols)])
-    check hello1A.Load("examples/hello.b98") == true
-    check hello1A == hello1B
-    var rn: Field
-    check rn.Load("examples/rn.b98") == true
-    check rn == hello1B
-    var hello2A: Field; var hello2B = Field(x: 1, lx: 33, ly: 2, lines: @[
+    check Load("nonexistant") == nil
+    check Load("examples/invalid.b98") == nil
+    check Load("examples/empty.b98") == nil
+    check Load("examples/minimal.b98")[] == Field(lx: 1, ly: 1, lines: @[Line(l: 1, columns: @['@'].cols)])
+    let hello = Field(lx: 24, ly: 1, lines: @[Line(l: 24, columns: @['6', '4', '+', '"', '!', 'd', 'l', 'r', 'o', 'W', ' ', ',', 'o', 'l', 'l', 'e', 'H', '"', '>', ':', '#', ',', '_', '@'].cols)])
+    check Load("examples/hello.b98")[] == hello
+    check Load("examples/rn.b98")[] == hello
+    check Load("examples/hello2.b98")[] == Field(x: 1, lx: 33, ly: 2, lines: @[
       Line(x: 33, l: 1, columns: @['v'].cols),
       Line(x: 1, l: 33, columns: @['@', ' ', '>', ' ', '#', ';', '>', ':', '#', ',', '_', 'e', '-', 'j', ';', ' ', '"', 'H', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '!',
           '"', 'd', 'a', '<'].cols)
     ])
-    check hello2A.Load("examples/hello2.b98") == true
-    check hello2A == hello2B
-    var factorial2A: Field; var factorial2B = Field(x: 0, lx: 15, ly: 2, lines: @[
+    check Load("examples/factorial.b98")[] == Field(x: 0, lx: 15, ly: 2, lines: @[
       Line(x: 0, l: 15, columns: @['&', '>', ':', '1', '-', ':', 'v', ' ', 'v', ' ', '*', '_', '$', '.', '@'].cols),
       Line(x: 1, l: 11, columns: @['^', ' ', ' ', ' ', ' ', '_', '$', '>', '\\', ':', '^'].cols)
     ])
-    check factorial2A.Load("examples/factorial.b98") == true
-    check factorial2A == factorial2B
-    var dna2A: Field; var dna2B = Field(x: 0, lx: 7, ly: 8, lines: @[
+    check Load("examples/dna.b98")[] == Field(x: 0, lx: 7, ly: 8, lines: @[
       Line(x: 0, l: 7, columns: @['7', '^', 'D', 'N', '>', 'v', 'A'].cols),
       Line(x: 0, l: 7, columns: @['v', '_', '#', 'v', '?', ' ', 'v'].cols),
       Line(x: 0, l: 7, columns: @['7', '^', '<', '"', '"', '"', '"'].cols),
@@ -143,8 +130,6 @@ suite "Field":
       Line(x: 0, l: 7, columns: @['+', '8', '^', '-', '1', ',', '<'].cols),
       Line(x: 0, l: 7, columns: @['>', ' ', ',', '+', ',', '@', ')'].cols),
     ])
-    check dna2A.Load("examples/dna.b98") == true
-    check dna2A == dna2B
   test "Set":
     var f = Field(x: 0, y: 0, lx: 1, ly: 1, lines: @[Line(x: 0, l: 1, columns: @['>'].cols)])
     f.Set(0, 0, int('@'))

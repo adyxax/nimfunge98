@@ -69,11 +69,13 @@ func Get*(f: Field, x, y: int): int =
 func IsIn*(f: Field, x, y: int): bool =
   return x >= f.x and y >= f.y and x < f.x+f.lx and y < f.y+f.ly
 
-proc Load*(f: var Field, filename: string): bool =
+proc Load*(filename: string): ref Field =
   var file: File
   if not open(file, filename):
-    return false
+    return nil
   defer: file.close()
+  var f: ref Field
+  new(f)
   f.lines.add(Line())
   var l = addr f.lines[0]
   var trailingSpaces = 0
@@ -83,7 +85,7 @@ proc Load*(f: var Field, filename: string): bool =
     if n <= 0:
       if f.ly == 0:
         if l.l == 0: # we got en empty file!
-          return false
+          return nil
         f.x = l.x
       if l.l > 0:
         inc f.ly
@@ -98,7 +100,7 @@ proc Load*(f: var Field, filename: string): bool =
       if data[i] == '\n' or data[i] == '\r':
         if f.ly == 0:
           if l.l == 0:
-            return false
+            return nil
           f.x = l.x
         inc f.ly
         if f.x > l.x:
@@ -130,7 +132,7 @@ proc Load*(f: var Field, filename: string): bool =
             inc l.l
       inc i
   f.lines = f.lines[0..<f.ly]
-  return true
+  return f
 
 func Set*(f: var Field, x, y, v: int) =
   if v == int(' '):

@@ -32,7 +32,7 @@ task fmt, "Run nimpretty on all git-managed .nim files in the current repo":
         #                           ^^^^^-- That "cd" is required.
       if fileIsGitManaged:
         let
-          cmd = "nimpretty --maxLineLen=180 $1" % [file]
+          cmd = "nimpretty --maxLineLen=220 $1" % [file]
         echo "Running $1 .." % [cmd]
         exec(cmd)
 
