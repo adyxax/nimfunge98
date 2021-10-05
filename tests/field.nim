@@ -205,3 +205,14 @@ suite "Field":
     ])
     f.Set(-7, 4, int('y'))
     check f == xprependyappend
+  test "Step":
+    var minimal = Load("examples/minimal.b98")
+    var hello = Load("examples/hello.b98")
+    var dna = Load("examples/dna.b98")
+    check minimal[].Step((0, 0), (0, 0)) == (0, 0)
+    check minimal[].Step((0, 0), (1, 0)) == (0, 0)
+    check hello[].Step((3, 0), (0, 0)) == (3, 0)
+    check hello[].Step((3, 0), (1, 0)) == (4, 0)
+    check dna[].Step((1, 2), (3, 5)) == (4, 7)
+    check dna[].Step((6, 1), (1, 1)) == (5, 0)
+    check dna[].Step((1, 4), (-2, 2)) == (5, 0)

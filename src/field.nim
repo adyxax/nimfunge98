@@ -198,3 +198,18 @@ func Set*(f: var Field, x, y, v: int) =
       f.x = x
     if f.lx < x-f.x+1:
       f.lx = x-f.x+1
+
+func Step*(f: Field, v: tuple[x, y: int], d: tuple[x, y: int]): (int, int) =
+  var x = v.x + d.x
+  var y = v.y + d.y
+  if f.IsIn(x, y):
+    return (x, y)
+  # We are stepping outside, we need to wrap the Lahey-space
+  x = v.x
+  y = v.y
+  while true:
+    let x2 = x - d.x
+    let y2 = y - d.y
+    if not f.IsIn(x2, y2):
+      return (x, y)
+    x = x2; y = y2
