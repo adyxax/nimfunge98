@@ -3,7 +3,6 @@
 This repository contains code for a nim program that can interpret a valid [Funge-98](https://github.com/catseye/Funge-98/blob/master/doc/funge98.markdown) program. It will soon pass the [mycology test suite](https://github.com/Deewiant/Mycology).
 
 Current limitations are :
-- it is not finished!
 - currently does not implement any fingerprints
 - does not implement concurrent execution with the `t` command
 - does not implement file I/O with the `i` and `o` commands
@@ -70,4 +69,7 @@ To debug these particular tests, use :
 ```
 nim c --debugger:on --parallelBuild:1 --debuginfo --linedir:on tests/stack.nim
 gdb tests/stack
+set args XXXXX-if-necessary
+b src/truc.nim:123
+r
 ```

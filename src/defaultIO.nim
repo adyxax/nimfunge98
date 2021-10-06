@@ -37,4 +37,4 @@ proc defaultCharacterOutput*(v: int) =
   discard stdout.writeChars(@[v.char()], 0, 1)
 
 proc defaultDecimalOutput*(v: int) =
-  stdout.write(&"{v}")
+  stdout.write(&"{v} ")
