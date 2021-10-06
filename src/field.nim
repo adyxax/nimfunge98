@@ -79,9 +79,10 @@ proc Load*(filename: string): ref Field =
   f.lines.add(Line())
   var l = addr f.lines[0]
   var trailingSpaces = 0
-  var data: array[255, char]
+  var data: array[4096, char]
+  var lastReadIsCR = false
   while true:
-    let n = file.readChars(data, 0, 255)
+    let n = file.readChars(data, 0, 4096)
     if n <= 0:
       if f.ly == 0:
         if l.l == 0: # we got en empty file!
@@ -97,21 +98,29 @@ proc Load*(filename: string): ref Field =
       if data[i] == char(12):
         inc i
         continue
+      if lastReadIsCR and data[i] == '\n':
+        inc i
+        lastReadIsCR = false
+        continue
       if data[i] == '\n' or data[i] == '\r':
         if f.ly == 0:
           if l.l == 0:
             return nil
           f.x = l.x
         inc f.ly
-        if f.x > l.x:
-          f.x = l.x
-        if f.lx < l.l+l.x-f.x:
-          f.lx = l.l+l.x-f.x
+        if l.l > 0:
+          if f.x > l.x:
+            f.x = l.x
+          if f.lx < l.l+l.x-f.x:
+            f.lx = l.l+l.x-f.x
         f.lines.add(Line())
         l = addr f.lines[^1]
         trailingSpaces = 0
-        if i+1 < n and data[i] == '\r' and data[i+1] == '\n':
-          inc i
+        if i+1 < n:
+          if data[i] == '\r' and data[i+1] == '\n':
+            inc i
+        else:
+          lastReadIsCR = true
       else:
         if data[i] == ' ':
           if l.l == 0: # trim leading spaces
