@@ -110,3 +110,42 @@ suite "StackStack":
     check empty.height == 1
     check empty[].Pop() == 1
     check empty[].Pop() == 0
+  test "Under":
+    var empty = NewStackStack()
+    empty[].Push(18)
+    check empty[].Under() == true
+    check empty[].Pop() == 18
+    empty[].Push(1)
+    empty[].Push(2)
+    empty[].Push(3)
+    empty[].Push(4)
+    empty[].Push(5)
+    empty[].Push(6)
+    empty[].Push(0)
+    empty[].Begin((7, 8))
+    empty[].Push(9)
+    empty[].Push(0)
+    check empty[].Under() == false
+    check empty[].Pop() == 9
+    empty[].Push(9)
+    empty[].Push(2)
+    check empty[].Under() == false
+    check empty[].Pop() == 7
+    check empty[].Pop() == 8
+    check empty[].Pop() == 9
+    empty[].Push(9)
+    empty[].Push(10)
+    empty[].Push(-3)
+    check empty[].Under() == false
+    check empty[].Pop() == 0
+    check empty[].Pop() == 0
+    check empty[].Pop() == 0
+    var v: tuple[x, y: int]
+    check empty[].End(v) == false
+    check v.x == 9
+    check v.y == 0
+    check empty[].Pop() == 10
+    check empty[].Pop() == 6
+  test "GetHeights":
+    var empty = NewStackStack()
+    check empty[].GetHeights == (1, @[0])

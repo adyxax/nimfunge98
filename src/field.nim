@@ -213,3 +213,6 @@ func Step*(f: Field, v: tuple[x, y: int], d: tuple[x, y: int]): (int, int) =
     if not f.IsIn(x2, y2):
       return (x, y)
     x = x2; y = y2
+
+func GetSize*(f: Field): (int, int, int, int) =
+  return (f.x, f.y, f.lx, f.ly)

@@ -144,3 +144,6 @@ suite "Stack":
     check empty[].Next() == nil
     var some = NewStack(next = empty)
     check some[].Next() == empty
+  test "GetHeights":
+    var empty = NewStack()
+    check empty[].GetHeights == @[0]

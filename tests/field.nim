@@ -216,3 +216,12 @@ suite "Field":
     check dna[].Step((1, 2), (3, 5)) == (4, 7)
     check dna[].Step((6, 1), (1, 1)) == (5, 0)
     check dna[].Step((1, 4), (-2, 2)) == (5, 0)
+  test "GetSize":
+    var minimal = Load("examples/minimal.b98")
+    var hello = Load("examples/hello.b98")
+    var hello2 = Load("examples/hello2.b98")
+    var dna = Load("examples/dna.b98")
+    check minimal[].GetSize() == (0, 0, 1, 1)
+    check hello[].GetSize() == (0, 0, 24, 1)
+    check hello2[].GetSize() == (1, 0, 33, 2)
+    check dna[].GetSize() == (0, 0, 7, 8)

@@ -80,3 +80,19 @@ func Discard*(s: var Stack, n: int) =
 
 func Next*(s: Stack): ref Stack =
   return s.next
+
+func GetHeights*(s: Stack): seq[int] =
+  if s.next != nil:
+    result = s.next[].GetHeights()
+    result.add(s.height)
+  else:
+    return @[s.height]
+
+func YCommandPick*(s: var Stack, n, h: int) =
+  if n > s.height:
+    s.height = 1
+    s.data[0] = 0
+  else:
+    let v = s.data[s.height-n]
+    s.height = h
+    s.Push(v)

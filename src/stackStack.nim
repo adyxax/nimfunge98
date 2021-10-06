@@ -52,8 +52,7 @@ func End*(ss: var StackStack, v: var tuple[x, y: int]): bool =
   let toss = ss.head
   let soss = toss[].Next()
   let n = toss[].Pop()
-  v.y = soss[].Pop()
-  v.x = soss[].Pop()
+  (v.x, v.y) = soss[].PopVector()
   if n > 0:
     soss[].Transfert(toss[], n)
   else:
@@ -61,3 +60,22 @@ func End*(ss: var StackStack, v: var tuple[x, y: int]): bool =
   dec ss.height
   ss.head = soss
   return false
+
+func Under*(ss: var StackStack): bool =
+  if ss.height == 1:
+    return true
+  let soss = ss.head[].Next()
+  let n = ss.Pop()
+  if n > 0:
+    for i in 0..<n:
+      ss.Push(soss[].Pop())
+  else:
+    for i in 0 ..< -n:
+      soss[].Push(ss.Pop())
+  return false
+
+func GetHeights*(ss: StackStack): (int, seq[int]) =
+  return (ss.height, ss.head[].GetHeights)
+
+func YCommandPick*(ss: var StackStack, n, h: int) =
+  ss.head[].YCommandPick(n, h)
