@@ -116,11 +116,11 @@ proc Load*(filename: string): ref Field =
         f.lines.add(Line())
         l = addr f.lines[^1]
         trailingSpaces = 0
-        if i+1 < n:
-          if data[i] == '\r' and data[i+1] == '\n':
+        if data[i] == '\r':
+          if i+1 < n and data[i+1] == '\n':
             inc i
-        else:
-          lastReadIsCR = true
+          else:
+            lastReadIsCR = true
       else:
         if data[i] == ' ':
           if l.l == 0: # trim leading spaces

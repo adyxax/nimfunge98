@@ -1,0 +1,6 @@
+[submodule "spec"]
+	path = spec
+	url = https://github.com/catseye/Funge-98
+[submodule "mycology"]
+	path = mycology
+	url = https://github.com/Deewiant/Mycology
