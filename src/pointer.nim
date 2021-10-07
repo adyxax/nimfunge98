@@ -10,12 +10,12 @@ randomize()
 
 type
   Pointer* = object
-    x, y: int # The pointer's positiont
-    dx, dy: int # The pointer's traveling delta
-    sox, soy: int # The storage offset
+    x, y: int                          # The pointer's positiont
+    dx, dy: int                        # The pointer's traveling delta
+    sox, soy: int                      # The storage offset
     stringMode, lastCharWasSpace: bool # The string mode flags
     ss: ref StackStack
-    next*: ref Pointer # the next element for multi-threaded funge-98
+    next*: ref Pointer                 # the next element for multi-threaded funge-98
     characterInput*: proc(): int
     decimalInput*: proc(): int
     characterOutput*: proc(v: int)

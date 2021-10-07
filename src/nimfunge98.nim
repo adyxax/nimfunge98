@@ -39,6 +39,6 @@ if f == nil:
   echo "Failed to load ", filename
   quit 1
 let argv = @[filename]
-var p = NewPointer(argv=argv)
+var p = NewPointer(argv = argv)
 let v = NewInterpreter(f, p)[].Run()
 quit v
