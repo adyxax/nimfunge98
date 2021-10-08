@@ -1,6 +1,6 @@
 # NimFunge98 : a Funge-98 interpreter written in nim
 
-This repository contains code for a nim program that can interpret a valid [Funge-98](https://github.com/catseye/Funge-98/blob/master/doc/funge98.markdown) program. It will soon pass the [mycology test suite](https://github.com/Deewiant/Mycology).
+This repository contains code for a nim program that can interpret a valid [Funge-98](https://github.com/catseye/Funge-98/blob/master/doc/funge98.markdown) program. It passes the [mycology test suite](https://github.com/Deewiant/Mycology).
 
 Current limitations are :
 - currently does not implement any fingerprints

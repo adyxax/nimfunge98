@@ -34,7 +34,10 @@ proc defaultDecimalInput*(): int =
   return result
 
 proc defaultCharacterOutput*(v: int) =
-  discard stdout.writeChars(@[v.char()], 0, 1)
+  try:
+    discard stdout.writeChars(@[v.char()], 0, 1)
+  except RangeDefect:
+    discard stdout.writeBuffer(unsafeAddr v, 4)
 
 proc defaultDecimalOutput*(v: int) =
   stdout.write(&"{v} ")

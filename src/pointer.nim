@@ -217,13 +217,16 @@ proc Eval(p: var Pointer, f: var Field, c: int): (bool, ref int) =
           of "SHELL": discard
           else: continue
         p.ss[].Push(0)
-        for i in value.len-1..0:
+        for i in countdown(value.len-1, 0):
           p.ss[].Push(int(value[i]))
+        p.ss[].Push(int('='))
+        for i in countdown(key.len-1, 0):
+          p.ss[].Push(int(key[i]))
       # 19
       p.ss[].PushVector((0, 0))
       for i in 0..<p.argv.len:
         p.ss[].Push(0)
-        for j in p.argv[i].len-1..0:
+        for j in countdown(p.argv[i].len-1, 0):
           p.ss[].Push(int(p.argv[i][j]))
       # 18
       for i in 0..<height:
@@ -233,7 +236,7 @@ proc Eval(p: var Pointer, f: var Field, c: int): (bool, ref int) =
       # 16
       p.ss[].Push(now.hour * 256 * 256 + now.minute * 256 + now.second)
       # 15
-      p.ss[].Push(now.year * 256 * 256 + int(now.month) * 256 + int(now.monthday))
+      p.ss[].Push((now.year - 1900) * 256 * 256 + int(now.month) * 256 + int(now.monthday))
       # 14
       p.ss[].PushVector((lx-1, ly-1))
       # 13
