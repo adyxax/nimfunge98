@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.1.0"
+version       = "1.0.0"
 author        = "Julien Dessaux"
 description   = "A Funge-98 interpreter written in nim"
 license       = "EUPL-1.2"
