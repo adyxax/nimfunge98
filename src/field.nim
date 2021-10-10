@@ -1,5 +1,5 @@
 type
-  Line = object
+  Line = ref object
     x, l: int
     columns: seq[int]
 
@@ -11,7 +11,7 @@ type
 func Blank*(f: var Field, x, y: int) =
   if y < f.y or y >= f.y+f.ly: # outside the field
     return
-  var l = addr f.lines[y-f.y]
+  var l = f.lines[y-f.y]
   if x < l.x or x >= l.x+l.l: # outside the field
     return
   if x > l.x and x < l.x+l.l-1: # just set the value
@@ -20,14 +20,14 @@ func Blank*(f: var Field, x, y: int) =
   if l.l == 1: # this was the last character on the line
     if y == f.y: # we need to trim the leading lines
       var i = 1
-      while f.lines[i].l == 0:
+      while f.lines[i] == nil or f.lines[i].l == 0:
         inc i
       f.y += i
       f.lines = f.lines[i..<f.ly]
       f.ly -= i
     elif y == f.y+f.ly-1: # we need to trim the trailing lines
       var i = f.ly-2
-      while f.lines[i].l == 0:
+      while f.lines[i] == nil or f.lines[i].l == 0:
         dec i
       f.ly = i+1
       f.lines = f.lines[0..<f.ly]
@@ -51,7 +51,7 @@ func Blank*(f: var Field, x, y: int) =
   f.x = f.lines[0].x
   var x2 = f.lines[0].l + f.lines[0].x
   for i in 1..<f.ly:
-    if f.lines[i].l == 0:
+    if f.lines[i] == nil or f.lines[i].l == 0:
       continue
     if f.x > f.lines[i].x:
       f.x = f.lines[i].x
@@ -74,10 +74,8 @@ proc Load*(filename: string): ref Field =
   if not open(file, filename):
     return nil
   defer: file.close()
-  var f: ref Field
-  new(f)
-  f.lines.add(Line())
-  var l = addr f.lines[0]
+  var f = new(Field)
+  var l = new(Line)
   var trailingSpaces = 0
   var data: array[4096, char]
   var lastReadIsCR = false
@@ -89,9 +87,10 @@ proc Load*(filename: string): ref Field =
           return nil
         f.x = l.x
       if l.l > 0:
-        inc f.ly
         if f.lx < l.l+l.x-f.x:
           f.lx = l.l+l.x-f.x
+        f.lines.add(l)
+        inc f.ly
       break
     var i = 0
     while i < n:
@@ -107,14 +106,14 @@ proc Load*(filename: string): ref Field =
           if l.l == 0:
             return nil
           f.x = l.x
-        inc f.ly
         if l.l > 0:
           if f.x > l.x:
             f.x = l.x
           if f.lx < l.l+l.x-f.x:
             f.lx = l.l+l.x-f.x
-        f.lines.add(Line())
-        l = addr f.lines[^1]
+        inc f.ly
+        f.lines.add(l)
+        l = new(Line)
         trailingSpaces = 0
         if data[i] == '\r':
           if i+1 < n and data[i+1] == '\n':
@@ -140,7 +139,6 @@ proc Load*(filename: string): ref Field =
             l.columns.add(int(data[i]))
             inc l.l
       inc i
-  f.lines = f.lines[0..<f.ly]
   return f
 
 func Set*(f: var Field, x, y, v: int) =
@@ -148,11 +146,14 @@ func Set*(f: var Field, x, y, v: int) =
     f.Blank(x, y)
   elif y >= f.y:
     if y < f.y+f.ly: # the line exists
-      var l = addr f.lines[y-f.y]
-      if l.l == 0: # An empty line is a special case
+      var l = f.lines[y-f.y]
+      if l == nil or l.l == 0: # An empty line is a special case
+        if l == nil:
+          new(l)
         l.x = x
         l.l = 1
         l.columns = @[v]
+        f.lines[y-f.y] = l
         if f.x > x:
           f.lx = f.lx+f.x-x
           f.x = x
