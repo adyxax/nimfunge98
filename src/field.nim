@@ -5,11 +5,11 @@ type
 
   Field* = object
     x, y: int
-    lx, ly: int
+    lx: int
     lines: seq[Line]
 
 func Blank*(f: var Field, x, y: int) =
-  if y < f.y or y >= f.y+f.ly: # outside the field
+  if y < f.y or y >= f.y+f.lines.len: # outside the field
     return
   var l = addr f.lines[y-f.y]
   if x < l.x or x >= l.x+l.columns.len: # outside the field
@@ -23,14 +23,12 @@ func Blank*(f: var Field, x, y: int) =
       while f.lines[i].columns.len == 0:
         inc i
       f.y += i
-      f.lines = f.lines[i..<f.ly]
-      f.ly -= i
-    elif y == f.y+f.ly-1: # we need to trim the trailing lines
-      var i = f.ly-2
+      f.lines = f.lines[i..<f.lines.len]
+    elif y == f.y+f.lines.len-1: # we need to trim the trailing lines
+      var i = f.lines.len-2
       while f.lines[i].columns.len == 0:
         dec i
-      f.ly = i+1
-      f.lines = f.lines[0..<f.ly]
+      f.lines = f.lines[0..i]
     else: # it was a line in the middle
       l.columns = @[]
   elif x == l.x: # we need to remove leading spaces
@@ -47,7 +45,7 @@ func Blank*(f: var Field, x, y: int) =
   # we now need to calculate the new field limits
   f.x = f.lines[0].x
   var x2 = f.lines[0].columns.len + f.lines[0].x
-  for i in 1..<f.ly:
+  for i in 1..<f.lines.len:
     if f.lines[i].columns.len == 0:
       continue
     if f.x > f.lines[i].x:
@@ -57,14 +55,14 @@ func Blank*(f: var Field, x, y: int) =
   f.lx = x2-f.x
 
 func Get*(f: Field, x, y: int): int =
-  if y >= f.y and y < f.y+f.ly:
+  if y >= f.y and y < f.y+f.lines.len:
     let l = f.lines[y-f.y]
     if x >= l.x and x < l.x+l.columns.len:
       return l.columns[x-l.x]
   return int(' ')
 
 func IsIn*(f: Field, x, y: int): bool =
-  return x >= f.x and y >= f.y and x < f.x+f.lx and y < f.y+f.ly
+  return x >= f.x and y >= f.y and x < f.x+f.lx and y < f.y+f.lines.len
 
 proc Load*(filename: string): ref Field =
   var file: File
@@ -81,14 +79,13 @@ proc Load*(filename: string): ref Field =
   while true:
     let n = file.readChars(data, 0, 4096)
     if n <= 0:
-      if f.ly == 0:
+      if f.lines.len == 0:
         if l == nil: # we got en empty file!
           return nil
         f.x = l.x
       if l != nil:
         if f.lx < l.columns.len+l.x-f.x:
           f.lx = l.columns.len+l.x-f.x
-        inc f.ly
       break
     var i = 0
     while i < n:
@@ -100,9 +97,9 @@ proc Load*(filename: string): ref Field =
         lastReadIsCR = false
         continue
       if data[i] == '\n' or data[i] == '\r':
-        if f.ly == 0:
-          if l == nil:
-            return nil
+        if f.lines.len == 0:
+          return nil
+        if f.lines.len == 1:
           f.x = l.x
         if l != nil:
           if f.x > l.x:
@@ -111,7 +108,6 @@ proc Load*(filename: string): ref Field =
             f.lx = l.columns.len+l.x-f.x
         else:
           f.lines.add(Line())
-        inc f.ly
         l = nil
         trailingSpaces = 0
         if data[i] == '\r':
@@ -141,14 +137,13 @@ proc Load*(filename: string): ref Field =
           else:
             l.columns.add(int(data[i]))
       inc i
-  f.lines = f.lines[0..<f.ly]
   return f
 
 func Set*(f: var Field, x, y, v: int) =
   if v == int(' '):
     f.Blank(x, y)
   elif y >= f.y:
-    if y < f.y+f.ly: # the line exists
+    if y < f.y+f.lines.len: # the line exists
       var l = addr f.lines[y-f.y]
       if l.columns.len == 0: # An empty line is a special case
         l.x = x
@@ -170,8 +165,7 @@ func Set*(f: var Field, x, y, v: int) =
           if f.lx < l.columns.len+l.x-f.x:
             f.lx = l.columns.len+l.x-f.x
       else: # preprend columns
-        let oldL = l.columns.len
-        var newline = newSeqUninitialized[int](oldL+l.x-x)
+        var newline = newSeqUninitialized[int](l.columns.len+l.x-x)
         newline[0] = v
         for i in 1..<l.x-x:
           newline[i] = int(' ')
@@ -183,23 +177,20 @@ func Set*(f: var Field, x, y, v: int) =
           f.lx = f.lx + f.x - x
           f.x = x
     else: # append lines
-      f.ly = y-f.y+1
-      f.lines.setlen(f.ly)
-      f.lines[f.ly-1] = Line(x: x, columns: @[v])
+      f.lines.setlen(y-f.y+1)
+      f.lines[y-f.y] = Line(x: x, columns: @[v])
       if f.x > x:
         f.lx = f.lx + f.x - x
         f.x = x
       if f.lx < x-f.x+1:
         f.lx = x-f.x+1
   else: # prepend lines
-    let newLy = f.ly+f.y-y
-    var newlines = newSeq[Line](newLy)
+    var newlines = newSeq[Line](f.lines.len+f.y-y)
     newlines[0] = Line(x: x, columns: @[v])
-    for i in f.y-y..<newLy:
+    for i in f.y-y..<newlines.len:
       newlines[i] = f.lines[i-f.y+y]
     f.lines = newlines
     f.y = y
-    f.ly = newLy
     if f.x > x:
       f.lx = f.lx+f.x-x
       f.x = x
@@ -222,4 +213,4 @@ func Step*(f: Field, v: tuple[x, y: int], d: tuple[x, y: int]): (int, int) =
     x = x2; y = y2
 
 func GetSize*(f: Field): (int, int, int, int) =
-  return (f.x, f.y, f.lx, f.ly)
+  return (f.x, f.y, f.lx, f.lines.len)
