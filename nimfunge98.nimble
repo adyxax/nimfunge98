@@ -16,9 +16,6 @@ requires "nim >= 1.4.8"
 task tests, "Runs the test suite":
   exec "testament pattern \"tests/*.nim\""
 
-task coverage, "Run all tests and calculate coverage":
-  exec "coco --target 'tests/**/*.nim' --cov '!tests,!nimcache'"
-
 import os, strformat
 
 task fmt, "Run nimpretty on all git-managed .nim files in the current repo":
@@ -37,7 +34,5 @@ task fmt, "Run nimpretty on all git-managed .nim files in the current repo":
         exec(cmd)
 
 task clean, "Clean":
-  exec "rm -rf coverage lcov.info nimcache"
-  exec "rm -rf outputGotten.txt testresults tests/megatest.nim"
-  exec "rm -rf src/htmldocs"
+  exec "rm -rf nimcache testresults tests/megatest.nim"
   exec "find tests/ -type f -executable -delete"
