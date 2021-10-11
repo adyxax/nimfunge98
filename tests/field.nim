@@ -2,109 +2,100 @@ import unittest
 
 include ../src/field
 
-func `==`(a, b: Field): bool =
-  if a.x == b.x and a.lx == b.lx and a.y == b.y and a.ly == b.ly:
-    for i in 0..<a.ly:
-      if a.lines[i] == nil and b.lines[i] == nil:
-        continue
-      if a.lines[i] == nil xor b.lines[i] == nil:
-        return false
-      if a.lines[i].x != b.lines[i].x or a.lines[i].columns != b.lines[i].columns:
-        return false
-    return true
-  return false
+func `==`(a, b: Line): bool = a.x == b.x and a.columns == b.columns
+func `==`(a, b: Field): bool = a.x == b.x and a.lx == b.lx and a.y == b.y and a.ly == b.ly and a.lines == b.lines
 
 func cols(a: openarray[char]): seq[int] =
   result.setlen(a.len)
   for i in 0..<a.len:
     result[i] = a[i].int()
 
-let minimal = Field(x: 0, y: 0, lx: 1, ly: 1, lines: @[Line(x: 0, columns: @[int('@')])])
+const minimal = Field(x: 0, y: 0, lx: 1, ly: 1, lines: @[Line(x: 0, columns: @[int('@')])])
 
 suite "Field":
   test "Blank":
     var f = Field(x: -7, y: -5, lx: 17, ly: 10, lines: @[
       Line(x: -5, columns: @[int('x')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: 8, columns: @[int('u')]),
       Line(x: 9, columns: @[int('e')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: -2, columns: @[int('l'), 32, int('@'), int('z'), 32, 32, int('r')]),
       Line(x: -3, columns: @[int('f')]),
       Line(x: 5, columns: @[int('d')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: -7, columns: @[int('y')]),
     ])
-    let moinsz = Field(x: -7, y: -5, lx: 17, ly: 10, lines: @[
+    const moinsz = Field(x: -7, y: -5, lx: 17, ly: 10, lines: @[
       Line(x: -5, columns: @[int('x')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: 8, columns: @[int('u')]),
       Line(x: 9, columns: @[int('e')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: -2, columns: @[int('l'), 32, int('@'), 32, 32, 32, int('r')]),
       Line(x: -3, columns: @[int('f')]),
       Line(x: 5, columns: @[int('d')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: -7, columns: @[int('y')]),
     ])
     f.Blank(1, 0)
     check f == moinsz
-    let moinsy = Field(x: -5, y: -5, lx: 15, ly: 8, lines: @[
+    const moinsy = Field(x: -5, y: -5, lx: 15, ly: 8, lines: @[
       Line(x: -5, columns: @[int('x')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: 8, columns: @[int('u')]),
       Line(x: 9, columns: @[int('e')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: -2, columns: @[int('l'), 32, int('@'), 32, 32, 32, int('r')]),
       Line(x: -3, columns: @[int('f')]),
       Line(x: 5, columns: @[int('d')]),
     ])
     f.Blank(-7, 4)
     check f == moinsy
-    let moinsx = Field(x: -3, y: -3, lx: 13, ly: 6, lines: @[
+    const moinsx = Field(x: -3, y: -3, lx: 13, ly: 6, lines: @[
       Line(x: 8, columns: @[int('u')]),
       Line(x: 9, columns: @[int('e')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: -2, columns: @[int('l'), 32, int('@'), 32, 32, 32, int('r')]),
       Line(x: -3, columns: @[int('f')]),
       Line(x: 5, columns: @[int('d')]),
     ])
     f.Blank(-5, -5)
     check f == moinsx
-    let moinsf = Field(x: -2, y: -3, lx: 12, ly: 6, lines: @[
+    const moinsf = Field(x: -2, y: -3, lx: 12, ly: 6, lines: @[
       Line(x: 8, columns: @[int('u')]),
       Line(x: 9, columns: @[int('e')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: -2, columns: @[int('l'), 32, int('@'), 32, 32, 32, int('r')]),
       Line(x: -3, columns: @[]),
       Line(x: 5, columns: @[int('d')]),
     ])
     f.Blank(-3, 1)
     check f == moinsf
-    let moinse = Field(x: -2, y: -3, lx: 11, ly: 6, lines: @[
+    const moinse = Field(x: -2, y: -3, lx: 11, ly: 6, lines: @[
       Line(x: 8, columns: @[int('u')]),
       Line(x: 9, columns: @[]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: -2, columns: @[int('l'), 32, int('@'), 32, 32, 32, int('r')]),
       Line(x: -3, columns: @[]),
       Line(x: 5, columns: @[int('d')]),
     ])
     f.Blank(9, -2)
     check f == moinse
-    let moinsu = Field(x: -2, y: 0, lx: 8, ly: 3, lines: @[
+    const moinsu = Field(x: -2, y: 0, lx: 8, ly: 3, lines: @[
       Line(x: -2, columns: @[int('l'), 32, int('@'), 32, 32, 32, int('r')]),
       Line(x: -3, columns: @[]),
       Line(x: 5, columns: @[int('d')]),
     ])
     f.Blank(8, -3)
     check f == moinsu
-    let moinsd = Field(x: -2, y: 0, lx: 7, ly: 1, lines: @[Line(x: -2, columns: @[int('l'), 32, int('@'), 32, 32, 32, int('r')])])
+    const moinsd = Field(x: -2, y: 0, lx: 7, ly: 1, lines: @[Line(x: -2, columns: @[int('l'), 32, int('@'), 32, 32, 32, int('r')])])
     f.Blank(5, 2)
     check f == moinsd
-    let moinsl = Field(x: 0, y: 0, lx: 5, ly: 1, lines: @[Line(x: 0, columns: @[int('@'), 32, 32, 32, int('r')])])
+    const moinsl = Field(x: 0, y: 0, lx: 5, ly: 1, lines: @[Line(x: 0, columns: @[int('@'), 32, 32, 32, int('r')])])
     f.Blank(-2, 0)
     check f == moinsl
-    let moinsr = Field(x: 0, y: 0, lx: 1, ly: 1, lines: @[Line(x: 0, columns: @[int('@')])])
+    const moinsr = Field(x: 0, y: 0, lx: 1, ly: 1, lines: @[Line(x: 0, columns: @[int('@')])])
     f.Blank(4, 0)
     check f == moinsr
   test "Get":
@@ -146,71 +137,71 @@ suite "Field":
     check f == minimal
     f.Set(1, 0, int(' '))
     check f == minimal
-    let xappend = Field(x: 0, y: 0, lx: 5, ly: 1, lines: @[Line(x: 0, columns: @[int('@'), 32, 32, 32, int('r')])])
+    const xappend = Field(x: 0, y: 0, lx: 5, ly: 1, lines: @[Line(x: 0, columns: @[int('@'), 32, 32, 32, int('r')])])
     f.Set(4, 0, int('r'))
     check f == xappend
-    let xprepend = Field(x: -2, y: 0, lx: 7, ly: 1, lines: @[Line(x: -2, columns: @[int('l'), 32, int('@'), 32, 32, 32, int('r')])])
+    const xprepend = Field(x: -2, y: 0, lx: 7, ly: 1, lines: @[Line(x: -2, columns: @[int('l'), 32, int('@'), 32, 32, 32, int('r')])])
     f.Set(-2, 0, int('l'))
     check f == xprepend
-    let yappend = Field(x: -2, y: 0, lx: 8, ly: 3, lines: @[
+    const yappend = Field(x: -2, y: 0, lx: 8, ly: 3, lines: @[
       Line(x: -2, columns: @[int('l'), 32, int('@'), 32, 32, 32, int('r')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: 5, columns: @[int('d')]),
     ])
     f.Set(5, 2, int('d'))
     check f == yappend
-    let yprepend = Field(x: -2, y: -3, lx: 11, ly: 6, lines: @[
+    const yprepend = Field(x: -2, y: -3, lx: 11, ly: 6, lines: @[
       Line(x: 8, columns: @[int('u')]),
-      nil,
-      nil,
+      Line(x: 0, columns: @[]),
+      Line(x: 0, columns: @[]),
       Line(x: -2, columns: @[int('l'), 32, int('@'), 32, 32, 32, int('r')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: 5, columns: @[int('d')]),
     ])
     f.Set(8, -3, int('u'))
     check f == yprepend
-    let xappendEmptyline = Field(x: -2, y: -3, lx: 12, ly: 6, lines: @[
+    const xappendEmptyline = Field(x: -2, y: -3, lx: 12, ly: 6, lines: @[
       Line(x: 8, columns: @[int('u')]),
       Line(x: 9, columns: @[int('e')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: -2, columns: @[int('l'), 32, int('@'), 32, 32, 32, int('r')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: 5, columns: @[int('d')]),
     ])
     f.Set(9, -2, int('e'))
     check f == xappendEmptyline
-    let xprependEmptyline = Field(x: -3, y: -3, lx: 13, ly: 6, lines: @[
+    const xprependEmptyline = Field(x: -3, y: -3, lx: 13, ly: 6, lines: @[
       Line(x: 8, columns: @[int('u')]),
       Line(x: 9, columns: @[int('e')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: -2, columns: @[int('l'), 32, int('@'), 32, 32, 32, int('r')]),
       Line(x: -3, columns: @[int('f')]),
       Line(x: 5, columns: @[int('d')]),
     ])
     f.Set(-3, 1, int('f'))
     check f == xprependEmptyline
-    let xprependyprepend = Field(x: -5, y: -5, lx: 15, ly: 8, lines: @[
+    const xprependyprepend = Field(x: -5, y: -5, lx: 15, ly: 8, lines: @[
       Line(x: -5, columns: @[int('x')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: 8, columns: @[int('u')]),
       Line(x: 9, columns: @[int('e')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: -2, columns: @[int('l'), 32, int('@'), 32, 32, 32, int('r')]),
       Line(x: -3, columns: @[int('f')]),
       Line(x: 5, columns: @[int('d')]),
     ])
     f.Set(-5, -5, int('x'))
     check f == xprependyprepend
-    let xprependyappend = Field(x: -7, y: -5, lx: 17, ly: 10, lines: @[
+    const xprependyappend = Field(x: -7, y: -5, lx: 17, ly: 10, lines: @[
       Line(x: -5, columns: @[int('x')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: 8, columns: @[int('u')]),
       Line(x: 9, columns: @[int('e')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: -2, columns: @[int('l'), 32, int('@'), 32, 32, 32, int('r')]),
       Line(x: -3, columns: @[int('f')]),
       Line(x: 5, columns: @[int('d')]),
-      nil,
+      Line(x: 0, columns: @[]),
       Line(x: -7, columns: @[int('y')]),
     ])
     f.Set(-7, 4, int('y'))
