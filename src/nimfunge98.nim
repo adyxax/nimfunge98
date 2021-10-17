@@ -8,10 +8,10 @@ import strformat
 
 proc Usage(i: int = 0) =
   let filename = getAppFilename().extractFilename()
-  echo fmt"""Usage of {filename}:
-    -f string  b98 file to interpret
-    -h         display this help message
-  """
+  echo fmt"""Usage: {filename} [FLAGS] filename
+
+FLAGS:
+  -h         display this help message"""
   if i != 0:
     quit i
 
@@ -28,6 +28,7 @@ for kind, key, value in getOpt():
       case key
         of "h":
           Usage()
+          quit 0
         else:
           echo "Unknown option: ", key
           Usage(1)

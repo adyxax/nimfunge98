@@ -31,7 +31,7 @@ nimble install
 
 Launching the interpreter is as simple as :
 ```
-nimfunge98 -f something.b98
+nimfunge98 something.b98
 ```
 
 The interpreter will then load and execute the specified Funge-98 program until the program normally terminates or is interrupted or killed.
