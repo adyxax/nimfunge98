@@ -9,23 +9,25 @@ type
     lines: seq[Line]
 
 func Blank*(f: var Field, x, y: int) =
-  if y < f.y or y >= f.y+f.lines.len: # outside the field
+  let ly = f.lines.len
+  if y < f.y or y >= f.y+ly: # outside the field
     return
   var l = addr f.lines[y-f.y]
-  if x < l.x or x >= l.x+l.columns.len: # outside the field
+  let ll = l.columns.len
+  if x < l.x or x >= l.x+ll: # outside the field
     return
-  if x > l.x and x < l.x+l.columns.len-1: # just set the value
+  if x > l.x and x < l.x+ll-1: # just set the value
     l.columns[x-l.x] = int(' ')
     return
-  if l.columns.len == 1: # this was the last character on the line
+  if ll == 1: # this was the last character on the line
     if y == f.y: # we need to trim the leading lines
       var i = 1
       while f.lines[i].columns.len == 0:
         inc i
       f.y += i
-      f.lines = f.lines[i..<f.lines.len]
-    elif y == f.y+f.lines.len-1: # we need to trim the trailing lines
-      var i = f.lines.len-2
+      f.lines = f.lines[i..<ly]
+    elif y == f.y+ly-1: # we need to trim the trailing lines
+      var i = ly-2
       while f.lines[i].columns.len == 0:
         dec i
       f.lines = f.lines[0..i]
@@ -36,9 +38,9 @@ func Blank*(f: var Field, x, y: int) =
     while l.columns[i] == int(' '):
       inc i
     l.x += i
-    l.columns = l.columns[i..<l.columns.len]
-  elif x == l.columns.len+l.x-1: # we need to remove trailing spaces
-    var i = l.columns.len-2
+    l.columns = l.columns[i..<ll]
+  elif x == ll+l.x-1: # we need to remove trailing spaces
+    var i = ll-2
     while l.columns[i] == int(' '):
       dec i
     l.columns = l.columns[0..i]
