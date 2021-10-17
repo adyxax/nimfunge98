@@ -73,7 +73,7 @@ proc Load*(filename: string): ref Field =
   defer: file.close()
   var f: ref Field
   new(f)
-  var l : ptr Line
+  var l: ptr Line
   var leadingSpaces = 0
   var trailingSpaces = 0
   var data: array[4096, char]
