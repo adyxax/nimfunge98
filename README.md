@@ -55,11 +55,6 @@ To run unit tests, use :
 nimble tests
 ```
 
-To calculate the code coverage of tests, use :
-```
-nimble coverage
-```
-
 To run tests only on (for example) the stack module, use :
 ```
 nim r tests/stack.nim
