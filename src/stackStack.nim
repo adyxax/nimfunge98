@@ -74,8 +74,8 @@ func Under*(ss: var StackStack): bool =
       soss[].Push(ss.Pop())
   return false
 
-func GetHeights*(ss: StackStack): (int, seq[int]) =
-  return (ss.height, ss.head[].GetHeights)
+func GetHeights*(ss: StackStack): seq[int] =
+  return ss.head[].GetHeights
 
 func YCommandPick*(ss: var StackStack, n, h: int) =
   ss.head[].YCommandPick(n, h)

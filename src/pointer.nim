@@ -201,7 +201,7 @@ proc Eval(p: var Pointer, f: var Field, c: int): (bool, ref int) =
       let n = p.ss[].Pop()
       let now = now()
       let (x, y, lx, ly) = f.GetSize()
-      let (height, heights) = p.ss[].GetHeights()
+      let heights = p.ss[].GetHeights()
       # 20
       for key, value in envPairs():
         case key
@@ -229,10 +229,10 @@ proc Eval(p: var Pointer, f: var Field, c: int): (bool, ref int) =
         for j in countdown(p.argv[i].len-1, 0):
           p.ss[].Push(int(p.argv[i][j]))
       # 18
-      for i in 0..<height:
+      for i in 0..<heights.len:
         p.ss[].Push(heights[i])
       # 17
-      p.ss[].Push(height)
+      p.ss[].Push(heights.len)
       # 16
       p.ss[].Push(now.hour * 256 * 256 + now.minute * 256 + now.second)
       # 15

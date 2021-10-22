@@ -148,4 +148,4 @@ suite "StackStack":
     check empty[].Pop() == 6
   test "GetHeights":
     var empty = NewStackStack()
-    check empty[].GetHeights == (1, @[0])
+    check empty[].GetHeights == @[0]
