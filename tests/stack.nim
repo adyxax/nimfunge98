@@ -101,8 +101,8 @@ suite "Stack":
     check some.data[2] == -4
     check some.data[3] == 0
   test "Transfert":
-    var empty = NewStack()
-    var empty2 = NewStack()
+    var empty = NewStack(size=12)
+    var empty2 = NewStack(size=7)
     empty[].Transfert(empty2[], 4)
     check empty.height == 4
     check empty2.height == 0
@@ -111,7 +111,7 @@ suite "Stack":
     check empty.data[2] == 0
     check empty.data[3] == 0
     empty[].Transfert(empty2[], 32)
-    check empty.size == 64
+    check empty.size == 36
     empty = NewStack()
     var some = NewStack()
     some[].Push(2)

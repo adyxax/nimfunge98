@@ -62,7 +62,7 @@ func Transfert*(toss: var Stack, soss: var Stack, n: int) =
   ## (aka begin) and '}' (aka end) stackstack commands
   toss.height += n
   if toss.height > toss.size:
-    toss.size += 32
+    toss.size = toss.height
     toss.data.setlen(toss.size)
   for i in 1..min(soss.height, n):
     toss.data[toss.height-i] = soss.data[soss.height-i]
