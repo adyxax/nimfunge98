@@ -79,7 +79,7 @@ proc Load*(filename: string): ref Field =
   var data: array[4096, char]
   var lastReadIsCR = false
   while true:
-    let n = file.readChars(data, 0, 4096)
+    let n = file.readChars(data)
     if n <= 0:
       if f.lines.len == 0:
         if l == nil: # we got en empty file!
