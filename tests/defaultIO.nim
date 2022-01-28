@@ -1,9 +1,13 @@
 discard """
   input: "ab1234cd12f"
   output: '''
+
 [Suite] defaultIO
-gh789
-  '''
+  [OK] defaultCharacterInput
+  [OK] defaultDecimalInput
+gh  [OK] defaultCharacterOutput
+789   [OK] defaultDecimalOutput
+'''
 """
 
 import unittest
