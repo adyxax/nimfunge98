@@ -72,9 +72,7 @@ suite "Stack":
   test "Duplicate":
     var empty = NewStack()
     empty[].Duplicate()
-    check empty.height == 2
-    check empty.data[0] == 0
-    check empty.data[1] == 0
+    check empty[].Pop() == 0
     var some = NewStack()
     some[].Push(2)
     some[].Push(-4)

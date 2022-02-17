@@ -48,8 +48,6 @@ func Clear*(s: var Stack) =
 func Duplicate*(s: var Stack) =
   if s.height > 0:
     s.Push(s.data[s.height-1])
-  else:
-    s.PushVector((0, 0))
 
 func Swap*(s: var Stack) =
   let a = s.Pop
