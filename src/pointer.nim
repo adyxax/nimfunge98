@@ -10,7 +10,7 @@ randomize()
 
 type
   Pointer* = object
-    x, y: int                          # The pointer's positiont
+    x, y: int                          # The pointer's position
     dx, dy: int                        # The pointer's traveling delta
     sox, soy: int                      # The storage offset
     stringMode, lastCharWasSpace: bool # The string mode flags
