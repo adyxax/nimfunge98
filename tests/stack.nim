@@ -99,8 +99,8 @@ suite "Stack":
     check some.data[2] == -4
     check some.data[3] == 0
   test "Transfert":
-    var empty = NewStack(size=12)
-    var empty2 = NewStack(size=7)
+    var empty = NewStack(size = 12)
+    var empty2 = NewStack(size = 7)
     empty[].Transfert(empty2[], 4)
     check empty.height == 4
     check empty2.height == 0
