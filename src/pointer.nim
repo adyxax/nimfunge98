@@ -178,7 +178,8 @@ proc Eval(p: var Pointer, f: var Field, c: int): (bool, ref int) =
       var v: tuple[x, y: int]
       if p.ss[].End(v):
         p.Reverse()
-      p.sox = v.x; p.soy = v.y
+      else:
+        p.sox = v.x; p.soy = v.y
     of int('u'):
       if p.ss[].Under():
         p.Reverse()
