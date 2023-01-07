@@ -106,8 +106,6 @@ suite "Field":
     check minimal.IsIn(1, 0) == false
   test "Load":
     check Load("nonexistant") == nil
-    check Load("examples/invalid.b98") == nil
-    check Load("examples/empty.b98") == nil
     check Load("examples/minimal.b98")[] == Field(lx: 1, lines: @[Line(columns: @['@'].cols)])
     let hello = Field(lx: 24, lines: @[Line(columns: @['6', '4', '+', '"', '!', 'd', 'l', 'r', 'o', 'W', ' ', ',', 'o', 'l', 'l', 'e', 'H', '"', '>', ':', '#', ',', '_', '@'].cols)])
     check Load("examples/hello.b98")[] == hello

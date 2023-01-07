@@ -66,84 +66,10 @@ func Get*(f: Field, x, y: int): int =
 func IsIn*(f: Field, x, y: int): bool =
   return x >= f.x and y >= f.y and x < f.x+f.lx and y < f.y+f.lines.len
 
-proc Load*(filename: string): ref Field =
-  var file: File
-  if not open(file, filename):
-    return nil
-  defer: file.close()
-  var f: ref Field
-  new(f)
-  var l: ptr Line
-  var leadingSpaces = 0
-  var trailingSpaces = 0
-  var data: array[4096, char]
-  var lastReadIsCR = false
-  while true:
-    let n = file.readChars(data)
-    if n <= 0:
-      if f.lines.len == 0:
-        if l == nil: # we got en empty file!
-          return nil
-        f.x = l.x
-      if l != nil:
-        if f.lx < l.columns.len+l.x-f.x:
-          f.lx = l.columns.len+l.x-f.x
-      break
-    var i = 0
-    while i < n:
-      if data[i] == char(12):
-        inc i
-        continue
-      if lastReadIsCR and data[i] == '\n':
-        inc i
-        lastReadIsCR = false
-        continue
-      if data[i] == '\n' or data[i] == '\r':
-        if f.lines.len == 0:
-          return nil
-        if f.lines.len == 1:
-          f.x = l.x
-        if l != nil:
-          if f.x > l.x:
-            f.x = l.x
-          if f.lx < l.columns.len+l.x-f.x:
-            f.lx = l.columns.len+l.x-f.x
-        else:
-          f.lines.add(Line())
-        l = nil
-        trailingSpaces = 0
-        if data[i] == '\r':
-          if i+1 < n and data[i+1] == '\n':
-            inc i
-          else:
-            lastReadIsCR = true
-      else:
-        if data[i] == ' ':
-          if l == nil: # trim leading spaces
-            inc leadingSpaces
-          else:
-            inc trailingSpaces
-        else:
-          if l == nil:
-            f.lines.add(Line())
-            l = addr f.lines[^1]
-            l.x = leadingSpaces
-            leadingSpaces = 0
-          if trailingSpaces > 0:
-            let oldL = l.columns.len
-            l.columns.setlen(oldL+trailingSpaces+1)
-            for j in oldL..<l.columns.len-1:
-              l.columns[j] = int(' ')
-            l.columns[^1] = int(data[i])
-            trailingSpaces = 0
-          else:
-            l.columns.add(int(data[i]))
-      inc i
-  return f
-
 func Set*(f: var Field, x, y, v: int) =
   if v == int(' '):
     f.Blank(x, y)
+    return
   elif y >= f.y:
     if y < f.y+f.lines.len: # the line exists
       var l = addr f.lines[y-f.y]
@@ -179,13 +105,19 @@ func Set*(f: var Field, x, y, v: int) =
           f.lx = f.lx + f.x - x
           f.x = x
     else: # append lines
-      f.lines.setlen(y-f.y+1)
-      f.lines[y-f.y] = Line(x: x, columns: @[v])
-      if f.x > x:
-        f.lx = f.lx + f.x - x
+      if f.lines.len == 0: # is it the first line of the field
+        f.lines.setlen(1)
         f.x = x
-      if f.lx < x-f.x+1:
-        f.lx = x-f.x+1
+        f.y = y
+        f.lx = 1
+      else:
+        f.lines.setlen(y-f.y+1)
+        if f.x > x:
+          f.lx = f.lx + f.x - x
+          f.x = x
+        if f.lx < x-f.x+1:
+          f.lx = x-f.x+1
+      f.lines[y-f.y] = Line(x: x, columns: @[v])
   else: # prepend lines
     var newlines = newSeq[Line](f.lines.len+f.y-y)
     newlines[0] = Line(x: x, columns: @[v])
@@ -198,6 +130,45 @@ func Set*(f: var Field, x, y, v: int) =
       f.x = x
     if f.lx < x-f.x+1:
       f.lx = x-f.x+1
+
+proc Load*(filename: string): ref Field =
+  var file: File
+  if not open(file, filename):
+    return nil
+  defer: file.close()
+  var f: ref Field
+  new(f)
+  var lastReadIsCR = false
+  var x = 0
+  var y = 0
+  while true:
+    var data: array[4096, char]
+    let n = file.readChars(data)
+    if n <= 0:
+      break
+    var i = 0
+    while i < n:
+      if lastReadIsCR:
+        lastReadIsCR = false
+        if data[i] == '\n':
+          inc i
+          continue
+      if data[i] == char(12):
+        discard
+      elif data[i] == '\r':
+        x = 0
+        inc y
+        lastReadIsCR = true
+      elif data[i] == '\n':
+        x = 0
+        inc y
+      #elif data[i] == ' ':
+      #  inc x
+      else:
+        f[].Set(x, y, int(data[i]))
+        inc x
+      inc i
+  return f
 
 func Step*(f: Field, v: tuple[x, y: int], d: tuple[x, y: int]): (int, int) =
   var x = v.x + d.x
